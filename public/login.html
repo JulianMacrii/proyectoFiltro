@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="ISO-8859-1">
+  <title>Login IPS</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body class="fondo">
+
+  <div class="contenedor">
+    <img src="logo.png" alt="Logo IPS" class="logo">
+    <form action="/api/login" method="POST" class="formulario">
+      <div class="campo">
+        <label for="usuario">Ingrese usuario:</label>
+        <input type="text" name="usuario" id="usuario" required>
+      </div>
+
+      <div class="campo">
+        <label for="clave">Ingrese Password:</label>
+        <input type="password" name="clave" id="clave" required>
+      </div>
+
+      <button type="submit">Ingresar</button>
+    </form>
+  </div>
+
+</body>
+</html>

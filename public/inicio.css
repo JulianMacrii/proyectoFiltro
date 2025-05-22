@@ -1,0 +1,96 @@
+/* public/inicio.css */
+body.panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-image: url('/fondo_gris1.png');
+  background-size: cover;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.panel-box {
+  background-color: white;
+  padding: 40px 60px 50px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 640px;
+  position: relative;
+}
+
+.panel-box img.logo {
+  width: 400px;
+  margin-bottom: 20px;
+  position: absolute;
+  top: 20px;
+  left: 30px;
+}
+
+.panel-box h2 {
+  position: absolute;
+  right: 30px;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.panel-box ul {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  padding: 0;
+  list-style: none;
+  margin-top: 100px;
+  margin-bottom: 30px;
+}
+
+.panel-box li a {
+  display: inline-block;
+  text-decoration: none;
+  font-weight: 600;
+  color: #004aad;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  font-size: 18px;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.panel-box li a::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 2px;
+  background: #004aad;
+  transition: width 0.3s;
+  margin: auto;
+}
+
+.panel-box li a:hover::after {
+  width: 100%;
+}
+
+.panel-box li a:hover {
+  color: #003580;
+}
+
+.panel-box a[href="/logout"] {
+  display: inline-block;
+  color: #880000;
+  background-color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 18px;
+  border: 2px solid #880000;
+  transition: 0.3s ease;
+}
+
+.panel-box a[href="/logout"]:hover {
+  background-color: #880000;
+  color: white;
+}

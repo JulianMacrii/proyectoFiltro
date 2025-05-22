@@ -1,0 +1,45 @@
+body.panel {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: url("fondo_gris1.png") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .panel-box {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 40px 60px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  .panel-box h2 {
+    margin-bottom: 30px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .panel-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .panel-box li {
+    margin: 12px 0;
+  }
+  
+  .panel-box a {
+    text-decoration: none;
+    color: #003399;
+    font-weight: bold;
+  }
+  
+  .panel-box a:hover {
+    text-decoration: underline;
+  }
+  
