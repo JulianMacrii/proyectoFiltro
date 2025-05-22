@@ -153,7 +153,9 @@ async function proxyRequest(method, target, req, res, postData = '') {
             maxRedirects: 0,
             validateStatus: s => s >= 200 && s < 400
         };
+
         let response;
+
         if (method === 'post') {
             response = await axios.post(target, postData, {
                 ...baseConfig,
@@ -166,51 +168,70 @@ async function proxyRequest(method, target, req, res, postData = '') {
             response = await axios.get(target, baseConfig);
         }
 
+        const status = response.status;
         const ct = response.headers['content-type'] || '';
+
+        // ✅ Si hay redirección 302 a un PDF
+        if (status === 302 && response.headers.location && response.headers.location.endsWith('.pdf')) {
+            const pdfUrl = new URL(response.headers.location, target).toString();
+            const pdfResponse = await axios.get(pdfUrl, {
+                headers: {
+                    Cookie: req.session.cookieHeader,
+                    'User-Agent': 'Mozilla/5.0'
+                },
+                responseType: 'arraybuffer'
+            });
+            res.set('Content-Type', 'application/pdf');
+            return res.send(pdfResponse.data);
+        }
+
+        // ✅ Si es PDF directo
+        if (ct.includes('application/pdf')) {
+            res.set('Content-Type', 'application/pdf');
+            return res.send(response.data);
+        }
+
+        // ✅ Si es otro contenido (HTML)
         if (!ct.includes('text/html')) {
             res.set('Content-Type', ct);
             return res.send(response.data);
         }
 
-        // reescribir HTML
+        // Si es HTML, reescribir para mantener proxy funcional
         let html = Buffer.from(response.data, 'binary').toString('latin1');
         const $ = cheerio.load(html, { decodeEntities: false });
 
-        // centrado visual
         $('body').wrapInner('<div class="contenido-centrado"></div>');
         $('head').append(`
-      <style>
-        .contenido-centrado {
-          display:flex; justify-content:center; align-items:center;
-          min-height:100vh; padding:40px; box-sizing:border-box;
-        }
-        table{ margin:0 auto!important; }
-      </style>
-    `);
+        <style>
+            .contenido-centrado {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                padding: 40px;
+                box-sizing: border-box;
+            }
+            table { margin: 0 auto !important; }
+        </style>`);
 
-        // 1) imágenes cimg
-        $('img[src*="/images/cimg/"],img[src*="images/cimg/"]').each((i, el) => {
-            const f = $(el).attr('src').split('/').pop();
-            $(el).attr('src', `/images/cimg/${f}`);
-        });
-        // 2) formularios: acción a nuestro /proxy
-        $('form').each((i, form) => {
+        $('form').each((_, form) => {
             const act = $(form).attr('action') || '';
             const abs = new URL(act, target).toString();
             $(form).attr('action', `/proxy?url=${encodeURIComponent(abs)}`);
         });
-        // 3) resto de src/href/background
-        $('[src],[href],[background]').each((i, el) => {
-            ['src', 'href', 'background'].forEach(a => {
-                const v = $(el).attr(a) || '';
-                if (!v || v.startsWith('#') || v.startsWith('mailto:') || v.startsWith('/images/cimg/')) return;
+
+        $('[src],[href],[background]').each((_, el) => {
+            ['src', 'href', 'background'].forEach(attr => {
+                const v = $(el).attr(attr);
+                if (!v || v.startsWith('#') || v.startsWith('mailto:') || v.includes('/images/cimg/')) return;
                 try {
                     const abs = new URL(v, target).toString();
-                    $(el).attr(a, `/proxy?url=${encodeURIComponent(abs)}`);
+                    $(el).attr(attr, `/proxy?url=${encodeURIComponent(abs)}`);
                 } catch { }
             });
         });
-        // 3) Ocultar contenedor de Baja autorización (por contenido textual)
+
         $('body').find('*').each((_, el) => {
             const t = $(el).text().replace(/\s+/g, ' ').trim().toLowerCase();
             if (t === 'baja autorización' || t === 'baja autorizacion') {
@@ -220,11 +241,13 @@ async function proxyRequest(method, target, req, res, postData = '') {
 
         res.set('Content-Type', 'text/html; charset=ISO-8859-1');
         res.send($.html());
+
     } catch (err) {
-        console.error('Error proxy:', err.message);
+        console.error('Proxy error:', err.message);
         res.sendStatus(500);
     }
 }
+
 
 // — LOGOUT —
 app.get('/logout', (req, res) => {
