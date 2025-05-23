@@ -2,12 +2,18 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios').default;
 const cheerio = require('cheerio');
+const bcrypt = require('bcryptjs');
 
 const loginHandler = async (req, res) => {
   const { usuario, clave } = req.body;
+
   const usuarios = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'usuarios.json'), 'utf8'));
-  const user = usuarios.find(u => u.usuario === usuario && u.clave === clave);
-  if (!user) return res.redirect('/?error=credenciales');
+  const user = usuarios.find(u => u.usuario === usuario);
+
+  // Validación segura con bcrypt
+  if (!user || !bcrypt.compareSync(clave, user.clave)) {
+    return res.redirect('/?error=credenciales');
+  }
 
   const envKey = user.envKey;
   const realUser = process.env[`${envKey}_USER`];

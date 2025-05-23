@@ -1,12 +1,12 @@
 [
   {
     "usuario": "jmacri",
-    "clave": "123456",
+    "clave": "$2b$10$6se8r7x1HEVW6Pz.HXB7dOMFx8Xk69bbVJa0wAV5Y9hpnlrXnnbF2",
     "envKey": "ENTE177"
   },
   {
     "usuario": "jsanmarco",
-    "clave": "123456",
+    "clave": "$2b$10$.ZCywNab29Du2N8RluePYuqZMPA5hRqgrVU4S7JjZKfn.PnZoe4sC",
     "envKey": "ENTE177"
   }
 ]

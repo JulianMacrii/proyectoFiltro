@@ -4,11 +4,26 @@
   <meta charset="ISO-8859-1">
   <title>Login IPS</title>
   <link rel="stylesheet" href="login.css">
+  <style>
+    #mensaje-error {
+      color: white;
+      background-color: #d32f2f;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      text-align: center;
+      display: none;
+    }
+  </style>
 </head>
 <body class="fondo">
 
   <div class="contenedor">
     <img src="logo.png" alt="Logo IPS" class="logo">
+
+    <!-- Mensaje de error -->
+    <div id="mensaje-error"></div>
+
     <form action="/api/login" method="POST" class="formulario">
       <div class="campo">
         <label for="usuario">Ingrese usuario:</label>
@@ -24,5 +39,31 @@
     </form>
   </div>
 
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get("error");
+    const mensajeDiv = document.getElementById("mensaje-error");
+
+    if (error) {
+      let mensaje = "";
+
+      switch (error) {
+        case "credenciales":
+          mensaje = "⚠️ Usuario o contraseña incorrectos.";
+          break;
+        case "loginips":
+          mensaje = "❌ Error al iniciar sesión en el sistema IPS.";
+          break;
+        case "servidor":
+          mensaje = "⚠️ Error interno del servidor. Contacte al administrador.";
+          break;
+        default:
+          mensaje = "❗ Ocurrió un error inesperado.";
+      }
+
+      mensajeDiv.textContent = mensaje;
+      mensajeDiv.style.display = "block";
+    }
+  </script>
 </body>
 </html>
