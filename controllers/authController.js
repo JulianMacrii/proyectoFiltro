@@ -53,7 +53,32 @@ const loginHandler = async (req, res) => {
 const panelHandler = (req, res) => {
   if (!req.session.cookieHeader) return res.redirect('/');
   const nombre = req.session.usuarioVisible || 'Usuario';
-  res.sendFile(path.join(__dirname, '..', 'public/panel.html')); // O usa res.send() si el HTML es dinámico
+
+  const url1 = encodeURIComponent('https://webmutuales.ips.gba.gob.ar/entidades/jsp-elements/veintePorciento/altaAutorizacionManual.jsp');
+  const url2 = encodeURIComponent('https://webmutuales.ips.gba.gob.ar/entidades/jsp-elements/veintePorciento/altaCuotaSocio.jsp');
+
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <title>Panel IPS</title>
+        <link rel="stylesheet" href="/inicio.css">
+      </head>
+      <body class="panel">
+        <div class="panel-box">
+          <img src="/logo.png" alt="Logo IPS" class="logo">
+          <h2>Bienvenido, ${nombre}</h2>
+          <ul>
+            <li><a href="/proxy?url=${url1}" target="_blank">Autorizar</a></li>
+            <li><a href="/proxy?url=${url2}" target="_blank">Cuota Social</a></li>
+          </ul>
+          <br>
+          <a href="/logout">Cerrar sesión</a>
+        </div>
+      </body>
+    </html>
+  `);
 };
 
 const logoutHandler = (req, res) => {
