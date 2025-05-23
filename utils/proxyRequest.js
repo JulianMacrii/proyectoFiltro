@@ -90,7 +90,7 @@ async function proxyRequest(method, target, req, res, postData = '') {
 
     $('body').find('*').each((_, el) => {
       const t = $(el).text().replace(/\s+/g, ' ').trim().toLowerCase();
-      if (t === 'baja autorización' || t === 'baja autorizacion') {
+      if (t === 'baja autorización' || t === 'baja autorizacion'  || t === 'baja socio') {
         $(el).parent().remove();
       }
     });
